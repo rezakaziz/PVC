@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>PVC</title>
+		<script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+	</head>
+	<body>
+		<form action="tableCreate">
+		  <label for="liste">Liste villes séparé par des virgules</label>
+		  <input type="text" id="liste" name="liste"><br><br>
+		</form>
+		<button onclick="tableCreate()" type="button">Generate Table</button>
+		<table id="table"></table>
+		<button onclick="grapheGenerate()" type="button">Generate Graphe</button>
+		<button onclick="SolutionPVC()" type="button">Generate Solution</button>
+		<div id="mynetwork"></div>
+		<div id="mynetworkSol"></div>
+	    <script type="text/javascript" src="GrapheComplet.js">
+	     
+	    </script>
+	    <script type="text/javascript">
+	    	var GrapheVilles=new Graphe();
+	    	function tableCreate() {
+  var col= document.getElementById("liste");
+  col= col.value.split(",");
+  var tbl = document.getElementById("table");
+  var tbdy = document.createElement('tbody');
+  for (var i = 0; i < col.length+1; i++) {
+    var tr = document.createElement('tr');
+    for(var j=0;j<col.length+1; j++){
+    	if (i===0){
+    		var th=document.createElement('th');
+    		if(j===0){
+    			tr.appendChild(th);
+    			continue;
+    		}
+    		th.innerHTML=(col[j-1]);
+    		tr.appendChild(th);
+    	}
+    	else{
+    		var td=document.createElement('td');
+    		if(j===0){
+    			td.innerHTML=col[i-1];
+    			tr.appendChild(td);
+    			continue;
+    		}
+    		else if (i<j){
+    			td.innerHTML="<input type=\"number\" id=\""+col[i-1]+col[j-1]+"\"/>"
+    		}
+    		
+    		tr.appendChild(td);
+    	}
+    	
+    }
+    
+    tbdy.appendChild(tr);
+  }
+  tbl.appendChild(tbdy);
+  
+}
+
+function grapheGenerate() {
+	var col= document.getElementById("liste");
+  col= col.value.split(",");
+  var iden=[];
+	for(var i = 0;i<col.length;i++){
+		for(var j = 0;j<col.length;j++){
+			if(i<j){iden.push(col[i]+col[j]);}//iden.push(col[j]+col[i]);}
+		}
+	}
+	//createVilles
+	villes=[] 
+	for(var i=0; i<col.length;i++){
+		villes.push(new Node(col[i]))
+	}
+	for(var i=0; i<iden.length;i++){
+		//if(document.getElementById(iden[i])){
+			console.log(iden[i])
+			var val=document.getElementById(iden[i]).value;
+			var index=col.indexOf(iden[i][0]);
+			villes[index].addSuccessor(iden[i][1],parseInt(val));
+			var index=col.indexOf(iden[i][1]);
+			villes[index].addSuccessor(iden[i][0],parseInt(val))
+		//}
+		/*else {
+			var val=document.getElementById(iden[i].split('').reverse().join('')).value;
+			var index=col.indexOf(iden[i][1]);
+			villes[index].addSuccessor(iden[i][0],parseInt(val))
+		}*/
+	}
+	var villesGraphe=new Graphe(noeuds=villes)
+  	var nodes = new vis.DataSet(villesGraphe.nodesToText());
+  	GrapheVilles=villesGraphe;
+
+      // create an array with edges
+      var edges = new vis.DataSet(villesGraphe.edgesToText());
+      console.log(edges);
+      // create a network
+      var container = document.getElementById("mynetwork");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+      var options = {
+  edges:{
+    
+    label: "",
+  }
+}
+     
+      var network = new vis.Network(container, data, options);
+}
+function SolutionPVC(){
+	var sol=sol_PVC(GrapheVilles,0);
+	console.log(GrapheVilles)
+	var cities=[];
+	for(var i =0;i<sol[0].length;i++){
+		var cite=GrapheVilles.noeuds[sol[0][i]];
+		cities[i]=new Node(cite.info);
+		j=i+1;
+		if (j===sol[0].length) j=0;
+		var succ=cite.successors.get(GrapheVilles.noeuds[sol[0][j]].info);
+		cities[i].addSuccessor(GrapheVilles.noeuds[sol[0][j]].info,succ);
+	}
+
+	var g=new Graphe(cities);
+	var nodes = new vis.DataSet(g.nodesToText());
+  	
+
+      // create an array with edges
+      var edges = new vis.DataSet(g.edgesToText());
+      
+      // create a network
+      var container = document.getElementById("mynetworkSol");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+      var options = {
+  edges:{
+    
+    label: "",
+  }
+}
+     
+      var network = new vis.Network(container, data, options);
+}
+
+	    </script>
+		
+	</body>
+</html>
