@@ -16,9 +16,16 @@
 		<button onclick="tableCreate()" type="button">Generate Table</button>
 		<table id="table"></table>
 		<button onclick="grapheGenerate()" type="button">Generate Graphe</button>
-		<button onclick="SolutionPVC()" type="button">Generate Solution</button>
+		<button onclick="SolutionPVC()" type="button">Generate Solution Exacte</button>
+		<button onclick="solutionHeuristique()" type="button">Generate Solution Heuristique</button>
+		<h1>Graphe des villes</h1>
 		<div id="mynetwork"></div>
+		<h1>Solution exacte</h1>
+		<p id="timeExacte"></p>
 		<div id="mynetworkSol"></div>
+		<h1>Solution Heuristique</h1>
+		<p id="timeHeuristique"></p>
+		<div id="mynetworkSolHeur"></div>
 	    <script type="text/javascript" src="GrapheComplet.js">
 	     
 	    </script>
@@ -49,7 +56,7 @@
     			continue;
     		}
     		else if (i<j){
-    			td.innerHTML="<input type=\"number\" id=\""+col[i-1]+col[j-1]+"\"/>"
+    			td.innerHTML="<input type=\"number\" id=\""+col[i-1]+"_"+col[j-1]+"\"/>"
     		}
     		
     		tr.appendChild(td);

@@ -24,7 +24,9 @@ class Node{
 
 		return res;
 	}
-
+	degres(){
+		return this.successors.size;
+	}
 }
 
 
@@ -35,6 +37,7 @@ class Graphe{
 		for(let i in noeuds){
 			this.visited.push(false);
 		}
+		this.arrete=this.edgesToText();
 	}
 
 	addNode(node){
@@ -81,7 +84,7 @@ class Graphe{
 
 		return false;
 	}
-	
+
 	edgesToText(){
 		let res=[];
 
@@ -99,9 +102,43 @@ class Graphe{
 		return res;
 		
 	}
+
+	PVC_heuristique(){
+		var edges=this.arrete;
+		var taille=this.noeuds.length;
+		
+		edges.sort((a, b) => (parseInt(a.label) > parseInt(b.label)) ? 1 : -1);
+		var v=new Graphe();
+		for (var n of this.noeuds){
+			v.addNode(new Node(n.info));
+		}
+		var dejaVisite=new Set();
+		for(var edge of edges){
+			var nS=v.noeuds[v.findNoeudByValue(this.noeuds[edge.from].info)];
+			var nD=v.noeuds[v.findNoeudByValue(this.noeuds[edge.to].info)];
+			if(nS.degres()<2 && nD.degres()<2){
+				if(!(dejaVisite.has(edge.from))){
+					dejaVisite.add(edge.from);
+					dejaVisite.add(edge.to);
+					nS.addSuccessor(nD.info,edge.label);
+					nD.addSuccessor(nS.info,edge.label);
+				}else if(!(dejaVisite.has(edge.to))){
+					dejaVisite.add(edge.to);
+					nS.addSuccessor(nD.info,edge.label);
+					nD.addSuccessor(nS.info,edge.label);
+				} 
+				else if (dejaVisite.size===taille){
+					nS.addSuccessor(nD.info,edge.label);
+					nD.addSuccessor(nS.info,edge.label);
+				}
+			}
+		}
+
+		return v;
+	
 }
 
-
+}
 
 
 function DFS(noeuds,noeud,ordre=[]){
@@ -153,6 +190,4 @@ function sol_PVC(noeuds,noeud){
 	lonmin=Math.min(...longeurs);
 	return [ordres[longeurs.indexOf(lonmin)],lonmin];
 }
-//console.log(sol_PVC(villes,0));
-//console.log(villes.edgesToText());
 

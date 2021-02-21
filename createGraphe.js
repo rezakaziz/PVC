@@ -4,7 +4,7 @@ function grapheGenerate() {
   var iden=[];
   for(var i = 0;i<col.length;i++){
     for(var j = 0;j<col.length;j++){
-      if(i<j){iden.push(col[i]+col[j]);}//iden.push(col[j]+col[i]);}
+      if(i<j){iden.push(col[i]+"_"+col[j]);}
     }
   }
   //createVilles
@@ -14,12 +14,12 @@ function grapheGenerate() {
   }
   for(var i=0; i<iden.length;i++){
     //if(document.getElementById(iden[i])){
-      console.log(iden[i])
+      id=iden[i].split("_")
       var val=document.getElementById(iden[i]).value;
-      var index=col.indexOf(iden[i][0]);
-      villes[index].addSuccessor(iden[i][1],parseInt(val));
-      var index=col.indexOf(iden[i][1]);
-      villes[index].addSuccessor(iden[i][0],parseInt(val))
+      var index=col.indexOf(id[0]);
+      villes[index].addSuccessor(id[1],parseInt(val));
+      var index=col.indexOf(id[1]);
+      villes[index].addSuccessor(id[0],parseInt(val))
     //}
     /*else {
       var val=document.getElementById(iden[i].split('').reverse().join('')).value;
@@ -50,8 +50,14 @@ function grapheGenerate() {
       var network = new vis.Network(container, data, options);
 }
 function SolutionPVC(){
-  var sol=sol_PVC(GrapheVilles,0);
-  console.log(GrapheVilles)
+  Debut = new Date();
+
+   var sol=sol_PVC(GrapheVilles,0);
+   Fin = new Date();
+   var temp=document.getElementById("timeExacte");
+   temp.innerHTML="temps d'execution: "+String(Fin-Debut)+ " ms "
+  
+  
   var cities=[];
   for(var i =0;i<sol[0].length;i++){
     var cite=GrapheVilles.noeuds[sol[0][i]];
@@ -71,6 +77,36 @@ function SolutionPVC(){
       
       // create a network
       var container = document.getElementById("mynetworkSol");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+      var options = {
+  edges:{
+    
+    label: "",
+  }
+}
+     
+      var network = new vis.Network(container, data, options);
+
+}
+function solutionHeuristique(){
+  Debut = new Date();
+
+   var g=GrapheVilles.PVC_heuristique();
+   Fin = new Date();
+   var temp=document.getElementById("timeHeuristique");
+   temp.innerHTML="temps d'execution: "+String(Fin-Debut)+ " ms "
+    
+  var nodes = new vis.DataSet(g.nodesToText());
+    
+
+      // create an array with edges
+      var edges = new vis.DataSet(g.edgesToText());
+      
+      // create a network
+      var container = document.getElementById("mynetworkSolHeur");
       var data = {
         nodes: nodes,
         edges: edges,
