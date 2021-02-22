@@ -53,10 +53,12 @@ function SolutionPVC(){
   Debut = new Date();
 
    var sol=sol_PVC(GrapheVilles,0);
+
    Fin = new Date();
    var temp=document.getElementById("timeExacte");
    temp.innerHTML="temps d'execution: "+String(Fin-Debut)+ " ms "
-  
+  var temp=document.getElementById("CoutExacte");
+   temp.innerHTML="Le cout est "+sol[1];
   
   var cities=[];
   for(var i =0;i<sol[0].length;i++){
@@ -97,8 +99,17 @@ function solutionHeuristique(){
    var g=GrapheVilles.PVC_heuristique();
    Fin = new Date();
    var temp=document.getElementById("timeHeuristique");
-   temp.innerHTML="temps d'execution: "+String(Fin-Debut)+ " ms "
-    
+   temp.innerHTML="temps d'execution: "+String(Fin-Debut)+ " ms ";
+   var taille= function long(){
+    var edges=g.edgesToText();
+    var sum=0
+    for(edge of edges){
+      sum+=parseInt(edge.label);
+    }
+    return sum;
+   }
+    var temp=document.getElementById("CoutHeur");
+   temp.innerHTML="Le cout est "+String(taille());
   var nodes = new vis.DataSet(g.nodesToText());
     
 
