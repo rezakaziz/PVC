@@ -32,8 +32,8 @@ This project implements a heuristic solution for the **Travelling Salesman Probl
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-link>
-   cd tsp-heuristic
+   git clone https://github.com/rezakaziz/PVC
+   cd PVC
    ```
 
 2. **Open the HTML file** in a browser to access the interactive interface.
